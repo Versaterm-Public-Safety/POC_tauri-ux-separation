@@ -1,0 +1,20 @@
+{
+  "name": "tnt-backend-mock",
+  "version": "0.1.0",
+  "description": "Mock WebSocket backend for TnT UX POC",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsc && node dist/server.js"
+  },
+  "dependencies": {
+    "ws": "^8.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.3.3"
+  }
+}
