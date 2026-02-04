@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ChannelStatus } from '../../types/messages';
 
 interface AudioStatusIndicatorProps {

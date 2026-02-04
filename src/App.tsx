@@ -1,4 +1,3 @@
-import React from 'react';
 import { AppShell } from './components/layout/AppShell';
 import { LanguageBadge } from './components/stitch/LanguageBadge';
 import { TranscriptPanel } from './components/stitch/TranscriptPanel';
