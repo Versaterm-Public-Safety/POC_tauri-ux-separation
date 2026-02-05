@@ -82,14 +82,30 @@ This implementation brings the TnT POC WebSocket message contract into full comp
 
 ## Pending User Stories
 
-### 🔲 User Story 4: WebSocket URL Path Compliance (Not Started)
-**Requirement**: Update WebSocket URL from `ws://localhost:8080` to `ws://localhost:8080/tnt`
+### ✅ User Story 4: WebSocket URL Path Compliance (COMPLETE)
+**Status**: Complete and Verified (219 tests passed)
 
-**Scope**:
-- Update frontend WebSocket connection URL
-- Update backend WebSocket server path handling
-- Update all test scripts
-- Verify no breaking changes
+**Changes**:
+- Updated frontend WebSocket URL to `ws://localhost:8080/tnt`
+- Updated backend WebSocketServer to enforce `/tnt` path
+- Updated all test scripts to use `/tnt` path
+- Zero breaking changes - all functionality works identically
+
+**Files Modified**:
+- `src/hooks/useWebSocket.ts` - Changed WS_URL constant
+- `backend/src/server.ts` - Added path: '/tnt' to server config
+- `test-websocket.mjs` - Updated URL
+- `test-us2-transcript.mjs` - Updated URL
+- `test-us3-callid.mjs` - Updated URL
+
+**Test Coverage**:
+- All US1 tests pass with new path (219 tests)
+- Connection establishes successfully
+- No functionality regressions
+
+## ~~Pending User Stories~~
+
+**All user stories complete! 🎉**
 
 ## Compliance Status
 
@@ -102,9 +118,9 @@ This implementation brings the TnT POC WebSocket message contract into full comp
 | TranscriptSegment.startTime | ✅ Complete | Call-relative seconds |
 | TranscriptSegment.endTime | ✅ Complete | Only on final segments |
 | CallStateData.callId | ✅ Complete | Present in active/ended states |
-| WebSocket URL path (/tnt) | ❌ Pending | US4 not implemented |
+| WebSocket URL path (/tnt) | ✅ Complete | All connections use /tnt path |
 
-**Overall Compliance**: 7/8 requirements complete (87.5%)
+**Overall Compliance**: 8/8 requirements complete (100%) 🎉
 
 ## Test Results Summary
 
@@ -124,12 +140,14 @@ Total:        314 tests passed, 0 failed
 
 ## Next Steps
 
-1. ✅ Complete User Story 4 (WebSocket URL path)
-2. Run full integration tests
-3. Update documentation
+1. ✅ ~~Complete User Story 4 (WebSocket URL path)~~ **DONE**
+2. Run final integration tests across all user stories
+3. Update project documentation
 4. Create PR linked to TNT-104
 5. Get code review approval
 6. Merge to master
+
+**Status**: All implementation complete, ready for final validation and PR creation
 
 ## Related Documentation
 
