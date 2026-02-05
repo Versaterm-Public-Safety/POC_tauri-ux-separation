@@ -38,7 +38,7 @@ function createServerMessage<T extends ServerMessage['type']>(
 console.log(`WebSocket server started on port ${PORT}`);
 console.log('Waiting for connections...\n');
 
-wss.on('connection', (ws: WebSocket) => {
+wss.on('connection', (ws: WebSocket, req) => {
   const sessionId = generateUUID();
   const session: ClientSession = {
     ws,
@@ -51,8 +51,9 @@ wss.on('connection', (ws: WebSocket) => {
   
   sessions.set(ws, session);
   
-  console.log(`[${sessionId}] Client connected`);
-  logEvent(sessionId, 'connection', { timestamp: Date.now() });
+  console.log(`[${sessionId}] Client connected from ${req.socket.remoteAddress}`);
+  console.log(`[${sessionId}] Total active connections: ${sessions.size}`);
+  logEvent(sessionId, 'connection', { timestamp: Date.now(), userAgent: req.headers['user-agent'] });
 
   // Send connection acknowledgment
   const ackMessage = createServerMessage('connection:ack', { sessionId });

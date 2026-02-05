@@ -27,7 +27,8 @@ export function logInteraction(sessionId: string, interaction: UIInteraction): v
     if (err) {
       console.error('Failed to write to log file:', err);
     } else {
-      console.log(`Logged interaction: ${interaction.component}.${interaction.action}`);
+      console.log(`✅ [${sessionId.substring(0, 8)}] Logged interaction: ${interaction.component}.${interaction.action}`);
+      console.log(`   Log file: ${LOG_FILE}`);
     }
   });
 }
