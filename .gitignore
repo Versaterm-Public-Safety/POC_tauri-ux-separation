@@ -30,3 +30,27 @@ dist-ssr
 backend/logs/*.jsonl
 backend/logs/*.log
 !backend/logs/.gitkeep
+
+# Environment files
+.env
+.env.local
+.env*.local
+
+# Build directories
+build/
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+
+# Test artifacts
+coverage/
+.nyc_output/
+
+# Rust/Tauri specific
+*.rs.bk
+*.rlib
+*.prof
+*.profdata
+Cargo.lock
