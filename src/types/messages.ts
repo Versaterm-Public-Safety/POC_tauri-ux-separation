@@ -42,9 +42,12 @@ export interface LanguageDetection {
 }
 
 export interface TranscriptSegment {
+  segmentId: string;      // UUID v4 - unique identifier for this segment
   speaker: 'caller' | 'telecommunicator';
   text: string;
   timestamp: number;
+  startTime: number;      // Call-relative time in seconds when segment started
+  endTime?: number;       // Call-relative time in seconds when segment ended (only set when isFinal=true)
   isFinal: boolean;
 }
 

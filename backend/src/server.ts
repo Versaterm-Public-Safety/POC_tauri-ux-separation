@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import type { ClientMessage, ServerMessage, AudioStatus } from './types.js';
+import type { ClientMessage, ServerMessage, AudioStatus, TranscriptSegment } from './types.js';
 import { logInteraction, logEvent } from './logger.js';
 import { mockConversation } from './mockConversation.js';
 import { generateUUID } from './utils/uuid.js';
@@ -12,6 +12,7 @@ interface ClientSession {
   ws: WebSocket;
   sessionId: string;
   callActive: boolean;
+  callStartTime: number | null;  // Timestamp when call started, for relative timing
   conversationTimeouts: NodeJS.Timeout[];
 }
 
@@ -39,6 +40,7 @@ wss.on('connection', (ws: WebSocket) => {
     ws,
     sessionId,
     callActive: false,
+    callStartTime: null,
     conversationTimeouts: [],
   };
   
@@ -110,6 +112,7 @@ function handleCallStart(session: ClientSession): void {
   }
 
   session.callActive = true;
+  session.callStartTime = Date.now();  // Track when call started for relative timing
   logEvent(sessionId, 'call:start', { timestamp: Date.now() });
 
   // Send connecting state
@@ -173,6 +176,7 @@ function handleCallEnd(session: ClientSession): void {
   }
 
   session.callActive = false;
+  session.callStartTime = null;  // Clear call start time
   logEvent(sessionId, 'call:end', { timestamp: Date.now() });
 
   // Clear all conversation timeouts
@@ -198,16 +202,30 @@ function handleCallEnd(session: ClientSession): void {
 
 function playMockConversation(session: ClientSession): void {
   const { ws } = session;
-  const callStartTime = Date.now();
+  
+  if (!session.callStartTime) {
+    console.error('Cannot play conversation without call start time');
+    return;
+  }
 
   mockConversation.forEach(({ delay, segment }) => {
     const timeout = setTimeout(() => {
-      if (!session.callActive) return;
+      if (!session.callActive || !session.callStartTime) return;
 
-      const transcriptMsg = createServerMessage('transcript:segment', {
+      const now = Date.now();
+      const startTime = (now - session.callStartTime) / 1000; // Convert to seconds
+      
+      // Build complete transcript segment with all required fields
+      const completeSegment: TranscriptSegment = {
         ...segment,
-        timestamp: callStartTime + delay,
-      });
+        segmentId: generateUUID(),
+        timestamp: now,
+        startTime,
+        // Only set endTime for final segments
+        ...(segment.isFinal && { endTime: startTime }),
+      };
+
+      const transcriptMsg = createServerMessage('transcript:segment', completeSegment);
       ws.send(JSON.stringify(transcriptMsg));
     }, delay);
 
