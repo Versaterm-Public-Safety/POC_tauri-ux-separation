@@ -19,6 +19,14 @@ export default {
           DEFAULT: '#dc2626',
         },
       },
+      // Transcript window sizing (FR-001, FR-009)
+      spacing: {
+        'transcript-min': '200px',
+      },
+      // Badge animation duration
+      transitionDuration: {
+        'badge': '200ms',
+      },
     },
   },
   plugins: [],
