@@ -81,6 +81,22 @@ Open http://localhost:1420
 npm run tauri:dev
 ```
 
+### 4. Validate UI → Backend Communication (Optional)
+
+To prove that all UI interactions are logged by the backend:
+
+```bash
+# In a separate terminal, watch interaction logs in real-time
+tail -f backend/logs/interactions.jsonl
+```
+
+Then interact with the UI (click "Start Call", etc.) and you'll see each action logged as JSON:
+```json
+{"type":"ui:interaction","component":"ControlPanel","action":"call:start","timestamp":"2026-02-05T21:15:00.000Z",...}
+```
+
+**Note**: This JSONL log file is the validation interface - there is no separate web dashboard. The logs prove the WebSocket contract is working correctly.
+
 ## 📖 Documentation
 
 - **[Component Replacement Guide](docs/component-replacement-guide.md)** - For UX team: How to swap AI-generated components

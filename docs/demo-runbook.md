@@ -142,7 +142,32 @@ Have these files visible:
 
 ---
 
-### Part 3: Interface Contract (3 minutes)
+### Part 3: Validation Proof (2 minutes)
+
+**Talking Points**:
+> "Let me prove that every UI interaction is actually being logged by the backend."
+
+**Actions**:
+1. **Open new terminal** and run:
+   ```bash
+   tail -f backend/logs/interactions.jsonl
+   ```
+
+2. **Click "Start Call"** in the UI
+
+3. **Show the log output**:
+   - Each interaction appears as a JSON line
+   - Includes timestamp, component, action
+   - "This proves frontend → backend communication works"
+
+4. **Click "End Call"** - another log entry appears
+
+**Key Message**:
+> "No separate dashboard needed - this JSONL log is our validation interface. Simple but effective for a POC."
+
+---
+
+### Part 4: Interface Contract (3 minutes)
 
 **Talking Points**:
 > "The secret to this separation is our interface contract. Let me show you."
@@ -212,22 +237,37 @@ Have these files visible:
 ### Part 5: Interaction Logging (2 minutes)
 
 **Talking Points**:
-> "Finally, let's verify that all interactions are logged."
+> "Finally, let's verify that all interactions are logged - this is our validation proof."
 
 **Actions**:
-1. **Clear logs** (optional):
+1. **Show the log file location**:
+   - "All UI interactions go to backend/logs/interactions.jsonl"
+   - "JSONL format - one JSON object per line"
+   - "No web dashboard needed - this IS the validation interface"
+
+2. **Clear logs** (optional):
    ```bash
    > backend/logs/interactions.jsonl
    ```
 
-2. **In running app, click around**:
+3. **In running app, click around**:
    - Click "Start Call"
    - Wait a moment
    - Click "End Call"
 
-3. **Show logs**:
+4. **Show logs**:
    ```bash
    cat backend/logs/interactions.jsonl | jq .
+   ```
+   - Point out: timestamp, component, action, messageId
+   - "Each interaction has a unique messageId for tracking"
+
+**Key Message**:
+> "This simple log proves the frontend-backend contract works. For a POC, this is all we need - no complex monitoring UI required."
+
+---
+
+## 🎬 Closing (1 minute)
    ```
    - "Each interaction is timestamped"
    - "Component name and action recorded"
