@@ -2,6 +2,11 @@
 
 > **Proof of Concept**: Clean separation between Tauri v2 + React frontend and Docker-based mock backend for the Translation & Transcription (TnT) system.
 
+## 📋 Architecture Specification
+
+This implementation follows the official architecture spec:
+**[Tauri v2 UX Separation POC](https://github.com/Versaterm-Public-Safety/tnt-project-docs/blob/master/specs/meta/tauri-v2-ux-separation-poc.md)**
+
 ## 🎯 Project Goals
 
 This POC validates that:

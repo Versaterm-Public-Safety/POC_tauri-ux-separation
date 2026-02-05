@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "test": "bash scripts/run-all-tests.sh",
+    "test:validate": "bash scripts/final-validation.sh"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
