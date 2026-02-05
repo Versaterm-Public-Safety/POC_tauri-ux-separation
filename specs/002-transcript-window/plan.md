@@ -12,7 +12,7 @@ Modify the transcript window UI component to have a fixed height (2× audio stat
 **Language/Version**: TypeScript 5.x (frontend)  
 **Primary Dependencies**: React 18.x, CSS-in-JS or Tailwind CSS (existing project stack)  
 **Storage**: N/A (display-only, transcript data provided by existing service)  
-**Testing**: Jest + React Testing Library, Playwright for E2E  
+**Testing**: Standalone Node.js test scripts (.mjs) per constitution; browser-based manual validation for E2E  
 **Target Platform**: Web browser (Chrome, Firefox, Edge - latest versions)  
 **Project Type**: Web application (frontend component modification)  
 **Performance Goals**: Auto-scroll completes within 500ms of new entry arrival; smooth 60fps scrolling  
@@ -52,28 +52,27 @@ specs/002-transcript-window/
 └── tasks.md             # Phase 2 output (/speckit-tasks command)
 ```
 
-### Source Code (implementation repository)
+### Source Code (this repository)
 
 ```text
-# Target: https://github.com/Versaterm-Public-Safety/911-Transcription-and-Translation
-# This is a frontend component modification
+# Target: POC_tauri-ux-separation (this repo)
+# Modifying existing stitch component
 
-frontend/
-├── src/
-│   ├── components/
-│   │   ├── TranscriptWindow/
-│   │   │   ├── TranscriptWindow.tsx      # Main component (modify)
-│   │   │   ├── TranscriptWindow.test.tsx # Unit tests (add)
-│   │   │   ├── TranscriptEntry.tsx       # Entry display (existing)
-│   │   │   ├── NewContentBadge.tsx       # New component (add)
-│   │   │   └── useAutoScroll.ts          # Custom hook (add)
-│   │   └── AudioStatusWindow/
-│   │       └── AudioStatusWindow.tsx     # Reference for height (read-only)
-│   └── hooks/
-│       └── useResizeObserver.ts          # Resize observation hook (add)
+src/
+├── components/
+│   ├── stitch/
+│   │   ├── TranscriptPanel.tsx           # Modify (add auto-scroll, fixed height)
+│   │   └── NewContentBadge.tsx            # Add (floating badge component)
+│   └── layout/
+│       └── AppShell.tsx                   # Reference for layout context
+├── hooks/
+│   ├── useWebSocket.ts                    # Existing
+│   ├── useAutoScroll.ts                   # Add (scroll state detection)
+│   └── useResizeObserver.ts               # Add (height calculation)
+├── store/
+│   └── callStore.ts                       # Existing (transcript state)
 └── tests/
-    └── e2e/
-        └── transcript-window.spec.ts     # E2E tests (add)
+    └── test-transcript-scroll.mjs         # Add (constitution-compliant testing)
 ```
 
 **Structure Decision**: Frontend component modification within existing React application. No new top-level directories; extends existing component structure.
@@ -81,3 +80,10 @@ frontend/
 ## Complexity Tracking
 
 > No violations requiring justification.
+
+### Testing Approach Note
+
+Per Constitution §X, this POC uses standalone Node.js test scripts (.mjs) rather than Jest/RTL. Component behavior will be validated via:
+1. WebSocket message contract tests (existing pattern in `tests/`)
+2. Manual browser testing per quickstart.md checklist
+3. Scroll behavior validated via browser DevTools performance panel

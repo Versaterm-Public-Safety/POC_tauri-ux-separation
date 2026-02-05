@@ -1,32 +1,31 @@
 # Quickstart: Transcript Window Implementation
 
 **Feature**: 002-transcript-window  
-**Target Repository**: https://github.com/Versaterm-Public-Safety/911-Transcription-and-Translation
+**Target Repository**: POC_tauri-ux-separation (this repo)
 
 ## Prerequisites
 
-1. Clone the implementation repository
-2. Node.js 18+ and npm/yarn installed
-3. Familiarity with React 18, TypeScript, and CSS
+1. Node.js 18+ and npm installed
+2. Familiarity with React 18, TypeScript, and Tailwind CSS
+3. Backend running: `cd backend && npm run dev`
 
 ## Quick Reference
 
-### Files to Create
+### Files Created
 
 | File | Purpose |
 |------|---------|
-| `src/components/TranscriptWindow/useAutoScroll.ts` | Auto-scroll hook with scroll state detection |
-| `src/components/TranscriptWindow/NewContentBadge.tsx` | Floating badge for new content indicator |
-| `src/components/TranscriptWindow/TranscriptWindow.test.tsx` | Unit tests for modified component |
+| `src/hooks/useAutoScroll.ts` | Auto-scroll hook with scroll state detection |
 | `src/hooks/useResizeObserver.ts` | Reusable resize observer hook |
-| `tests/e2e/transcript-window.spec.ts` | End-to-end tests for scroll behavior |
+| `src/components/stitch/NewContentBadge.tsx` | Floating badge for new content indicator |
+| `tests/test-transcript-scroll.mjs` | Contract tests for scroll behavior |
 
-### Files to Modify
+### Files Modified
 
 | File | Changes |
 |------|---------|
-| `src/components/TranscriptWindow/TranscriptWindow.tsx` | Add fixed height, auto-scroll, badge integration |
-| `src/components/TranscriptWindow/TranscriptWindow.css` | Height calculation, scroll container, badge positioning |
+| `src/components/stitch/TranscriptPanel.tsx` | Fixed height, auto-scroll, badge integration |
+| `tailwind.config.js` | Added transcript sizing and badge animation config |
 
 ## Implementation Steps
 
@@ -236,14 +235,79 @@ export function TranscriptWindow({ entries, audioStatusRef }: Props) {
 
 ## Testing Checklist
 
-- [ ] Height is exactly 2× audio status window height
-- [ ] Falls back to 200px when audio window unavailable
-- [ ] Auto-scrolls to bottom when new entries arrive (live mode)
-- [ ] Stops auto-scroll when user scrolls up
-- [ ] Shows badge with count when in review mode
-- [ ] Clicking badge scrolls to bottom and hides badge
-- [ ] Smooth scroll animation (not instant)
-- [ ] Works with rapid transcript updates
+### Contract Tests (Automated)
+
+Run from repository root:
+```bash
+node tests/test-transcript-scroll.mjs
+```
+
+### Browser-Based E2E Validation (Manual)
+
+**Setup:**
+1. Start backend: `cd backend && npm run dev`
+2. Start frontend: `npm run dev`
+3. Open http://localhost:1420
+
+**FR-001: Fixed Height (2× Audio Status)**
+- [ ] Transcript window height is approximately 2× the audio status window
+- [ ] Use browser DevTools to measure: `$0.offsetHeight` on both elements
+
+**FR-002: Vertical Scroll Bar**
+- [ ] Scroll bar appears when content exceeds visible area
+- [ ] Scroll bar is visible on the right side of transcript window
+
+**FR-003: Auto-Scroll to Latest Entry**
+- [ ] Click "Start Call" to begin receiving transcripts
+- [ ] New entries automatically appear at the bottom
+- [ ] No manual scrolling required to see latest entry
+
+**FR-004: Pause Auto-Scroll on Manual Scroll**
+- [ ] While call is active, scroll up manually
+- [ ] New entries arrive but view stays at current position
+- [ ] Auto-scroll is paused
+
+**FR-005: Floating Badge**
+- [ ] When scrolled up during active call, badge appears at bottom
+- [ ] Badge shows count of new entries (e.g., "3 new entries ↓")
+- [ ] Badge updates count as more entries arrive
+
+**FR-006: Resume Auto-Scroll**
+- [ ] Click the badge to return to live view
+- [ ] Badge disappears after clicking
+- [ ] Auto-scroll resumes showing latest entries
+
+**FR-007: Maintain Ratio on Resize**
+- [ ] Resize browser window
+- [ ] Transcript window maintains proportional height relationship
+
+**FR-008: Smooth Scrolling**
+- [ ] Auto-scroll animation is smooth (not instant/jarring)
+- [ ] No visual jumps when rapid entries arrive
+
+**FR-009: Fallback Height**
+- [ ] If audio status window is hidden, transcript uses 200px minimum height
+
+**SC-001: Performance (500ms)**
+- [ ] Open DevTools Performance panel
+- [ ] Record during active call
+- [ ] Verify scroll completes within 500ms of new entry
+
+### Edge Cases
+
+**Long Entry Text Wrapping**
+- [ ] Long transcript text wraps within the message bubble
+- [ ] No horizontal scroll bar appears
+- [ ] Text remains readable
+
+**Rapid-Fire Entries**
+- [ ] Multiple entries arriving in quick succession
+- [ ] Scroll remains smooth, not jerky
+- [ ] All entries are visible in order
+
+**Empty State**
+- [ ] Before call starts, shows placeholder text
+- [ ] No scroll bar when no entries exist
 
 ## Related Documentation
 

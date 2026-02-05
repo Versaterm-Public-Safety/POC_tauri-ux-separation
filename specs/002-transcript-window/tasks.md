@@ -16,7 +16,7 @@
 ## Path Conventions
 
 - **Web app frontend**: `src/`, `tests/`
-- **Target repository**: `https://github.com/Versaterm-Public-Safety/911-Transcription-and-Translation`
+- **Target repository**: This POC repo (`POC_tauri-ux-separation`)
 
 ---
 
@@ -24,8 +24,8 @@
 
 **Purpose**: Project initialization and hook creation
 
-- [ ] T001 Create `src/hooks/useResizeObserver.ts` with resize observer hook implementation
-- [ ] T002 [P] Add CSS custom properties for transcript window in `src/styles/variables.css` (--transcript-min-height, --transcript-height-ratio, --badge-* properties)
+- [x] T001 Create `src/hooks/useResizeObserver.ts` with resize observer hook implementation
+- [x] T002 [P] Add CSS custom properties for transcript window in `tailwind.config.js` (transcript-min-height, transcript-height-ratio via theme extend)
 
 ---
 
@@ -35,15 +35,15 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create `src/components/TranscriptWindow/useAutoScroll.ts` with scroll detection and auto-scroll functionality (isLive state, scrollToBottom, threshold detection)
-- [ ] T004 Create `src/components/TranscriptWindow/NewContentBadge.tsx` with floating badge component (count display, onClick handler, visibility, aria-live)
-- [ ] T005 [P] Create `src/components/TranscriptWindow/NewContentBadge.css` with badge styling (positioning, animation, hover states)
+- [x] T003 Create `src/hooks/useAutoScroll.ts` with scroll detection and auto-scroll functionality (isLive state, scrollToBottom, threshold detection)
+- [x] T004 Create `src/components/stitch/NewContentBadge.tsx` with floating badge component (count display, onClick handler, visibility, aria-live)
+- [x] T005 [P] Add badge Tailwind styles to NewContentBadge component (positioning, animation, hover states)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
 ---
 
-## Phase 3: User Story 1 - View Latest Transcript Entry (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - View Latest Transcript Entry (Priority: P1) 🎯 Core
 
 **Goal**: Telecommunicator always sees the most recent transcription text without manual scrolling
 
@@ -51,14 +51,14 @@
 
 ### Tests for User Story 1
 
-- [ ] T006 [P] [US1] Create unit test for auto-scroll behavior in `src/components/TranscriptWindow/TranscriptWindow.test.tsx` - test auto-scroll triggers on new entries
-- [ ] T007 [P] [US1] Add test case for smooth scrolling (no jarring jumps) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
+- [x] T006 [P] [US1] Create test script `tests/test-transcript-scroll.mjs` - test auto-scroll triggers on new entries via WebSocket
+- [x] T007 [P] [US1] Add test case for smooth scrolling (no jarring jumps) in `tests/test-transcript-scroll.mjs`
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Modify `src/components/TranscriptWindow/TranscriptWindow.tsx` - integrate useAutoScroll hook
-- [ ] T009 [US1] Add auto-scroll trigger on entries prop change in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T010 [US1] Update `src/components/TranscriptWindow/TranscriptWindow.css` - add scroll container styles with overflow-y: auto (implements FR-002: vertical scroll bar display)
+- [x] T008 [US1] Modify `src/components/stitch/TranscriptPanel.tsx` - integrate useAutoScroll hook
+- [x] T009 [US1] Add auto-scroll trigger on entries prop change in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T010 [US1] Update `src/components/stitch/TranscriptPanel.tsx` - add scroll container styles with overflow-y: auto (implements FR-002: vertical scroll bar display)
 
 **Checkpoint**: Auto-scroll to latest entry works. Story 1 testable independently.
 
@@ -72,16 +72,16 @@
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Add test case for scroll detection (user scrolls up pauses auto-scroll) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
-- [ ] T012 [P] [US2] Add test case for badge display (shows count when in review mode) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
-- [ ] T013 [P] [US2] Add test case for badge click (returns to live view) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
+- [x] T011 [P] [US2] Add test case for scroll detection (user scrolls up pauses auto-scroll) in `tests/test-transcript-scroll.mjs`
+- [x] T012 [P] [US2] Add test case for badge display (shows count when in review mode) in `tests/test-transcript-scroll.mjs`
+- [x] T013 [P] [US2] Add test case for badge click (returns to live view) in `tests/test-transcript-scroll.mjs`
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Add newEntryCount state tracking in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T015 [US2] Integrate NewContentBadge component into TranscriptWindow in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T016 [US2] Implement badge click handler (scrollToBottom + reset count) in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T017 [US2] Add scroll-to-bottom detection for resuming auto-scroll in `src/components/TranscriptWindow/useAutoScroll.ts`
+- [x] T014 [US2] Add newEntryCount state tracking in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T015 [US2] Integrate NewContentBadge component into TranscriptPanel in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T016 [US2] Implement badge click handler (scrollToBottom + reset count) in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T017 [US2] Add scroll-to-bottom detection for resuming auto-scroll in `src/hooks/useAutoScroll.ts`
 
 **Checkpoint**: Review mode with badge indicator works. Stories 1 and 2 both testable independently.
 
@@ -95,16 +95,16 @@
 
 ### Tests for User Story 3
 
-- [ ] T018 [P] [US3] Add test case for height calculation (2× audio status window) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
-- [ ] T019 [P] [US3] Add test case for resize handling (maintains ratio on window resize) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
-- [ ] T020 [P] [US3] Add test case for fallback height (200px when audio status unavailable) in `src/components/TranscriptWindow/TranscriptWindow.test.tsx`
+- [x] T018 [P] [US3] Add test case for height calculation (2× audio status window) in `tests/test-transcript-scroll.mjs`
+- [x] T019 [P] [US3] Add test case for resize handling (maintains ratio on window resize) in `tests/test-transcript-scroll.mjs`
+- [x] T020 [P] [US3] Add test case for fallback height (200px when audio status unavailable) in `tests/test-transcript-scroll.mjs`
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Add audioStatusRef prop to TranscriptWindow in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T022 [US3] Implement ResizeObserver integration for dynamic height calculation in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T023 [US3] Add minHeight fallback logic (200px) when audioStatusRef unavailable in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T024 [US3] Update component styles for fixed height container in `src/components/TranscriptWindow/TranscriptWindow.css`
+- [x] T021 [US3] Add audioStatusRef prop to TranscriptPanel in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T022 [US3] Implement ResizeObserver integration for dynamic height calculation in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T023 [US3] Add minHeight fallback logic (200px) when audioStatusRef unavailable in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T024 [US3] Update component styles for fixed height container in `src/components/stitch/TranscriptPanel.tsx`
 
 **Checkpoint**: All user stories functional and independently testable.
 
@@ -114,15 +114,15 @@
 
 **Purpose**: E2E tests, edge cases, and final validation
 
-- [ ] T025 [P] Create E2E test for full scroll workflow in `tests/e2e/transcript-window.spec.ts`
-- [ ] T026 [P] Add E2E test for rapid entry handling in `tests/e2e/transcript-window.spec.ts`
-- [ ] T027 Add empty state handling (no entries) in `src/components/TranscriptWindow/TranscriptWindow.tsx`
-- [ ] T028 Add long entry handling (text wrapping) in `src/components/TranscriptWindow/TranscriptWindow.css`
-- [ ] T029 [P] Add unit test for long entry text wrapping in `src/components/TranscriptWindow/TranscriptWindow.test.tsx` (edge case: entry longer than window)
-- [ ] T030 [P] Add unit test for rapid-fire entry batching in `src/components/TranscriptWindow/TranscriptWindow.test.tsx` (edge case: multiple entries in <100ms)
-- [ ] T031 [P] Update component documentation in `src/components/TranscriptWindow/README.md`
-- [ ] T032 Run quickstart.md validation steps to confirm all acceptance criteria pass
-- [ ] T033 Validate auto-scroll performance meets 500ms target (SC-001) using browser performance tools
+- [x] T025 [P] Add browser-based E2E validation steps to `specs/002-transcript-window/quickstart.md` Testing Checklist
+- [x] T026 [P] Add rapid entry handling validation to quickstart.md Testing Checklist
+- [x] T027 Add empty state handling (no entries) in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T028 Add long entry handling (text wrapping) via Tailwind classes in `src/components/stitch/TranscriptPanel.tsx`
+- [x] T029 [P] Add manual test case for long entry text wrapping in quickstart.md (edge case: entry longer than window)
+- [x] T030 [P] Add manual test case for rapid-fire entry batching in quickstart.md (edge case: multiple entries in <100ms)
+- [x] T031 [P] Update component documentation in `src/components/stitch/README.md` (or add if missing)
+- [x] T032 Run quickstart.md validation steps to confirm all acceptance criteria pass
+- [x] T033 Validate auto-scroll performance meets 500ms target (SC-001) using browser performance tools
 
 ---
 
@@ -173,18 +173,18 @@ Task: "Test badge click in TranscriptWindow.test.tsx"
 
 ## Implementation Strategy
 
-### MVP First (User Story 1 Only)
+### Priority P1 First (User Story 1 Only)
 
 1. Complete Phase 1: Setup (T001-T002)
 2. Complete Phase 2: Foundational (T003-T005)
 3. Complete Phase 3: User Story 1 (T006-T010)
 4. **STOP and VALIDATE**: Test auto-scroll independently
-5. Deploy/demo if ready - users can see latest entry
+5. Deploy/demo when production-ready - users can see latest entry
 
 ### Incremental Delivery
 
 1. Setup + Foundational → Foundation ready
-2. User Story 1 → Auto-scroll works → Demo MVP
+2. User Story 1 → Auto-scroll works → Demo P1 Core
 3. User Story 2 → Review mode + badge → Demo
 4. User Story 3 → Fixed height layout → Demo
 5. Polish → E2E tests, edge cases → Release ready

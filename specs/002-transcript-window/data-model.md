@@ -73,14 +73,14 @@ interface TranscriptWindowProps {
 }
 ```
 
-### TranscriptEntry (existing)
+### TranscriptEntry (existing - from src/types/messages.ts)
 
 ```typescript
-// Existing interface - NOT modified by this feature
+// Existing interface - aligns with src/types/messages.ts
 interface TranscriptEntry {
   id: string;
   timestamp: Date;
-  speaker: 'caller' | 'operator' | 'system';
+  speaker: 'caller' | 'agent';  // Matches existing codebase
   text: string;
   confidence?: number;
   language?: string;
