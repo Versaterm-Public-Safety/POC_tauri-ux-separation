@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useCallStore } from '../store/callStore';
 import type { ServerMessage, ClientMessage } from '../types/messages';
+import { generateUUID } from '../utils/uuid';
+import { generateTimestamp } from '../utils/timestamp';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = 'ws://localhost:8080/tnt';
 const RECONNECT_INTERVAL = 3000;
 
 export function useWebSocket() {
@@ -37,19 +39,19 @@ export function useWebSocket() {
 
           switch (message.type) {
             case 'connection:ack':
-              setSessionId(message.data.sessionId);
+              setSessionId(message.payload.sessionId);
               break;
             case 'call:state':
-              setCallState(message.data.state, message.data.timestamp);
+              setCallState(message.payload.state, message.payload.timestamp);
               break;
             case 'language:detected':
-              setLanguageDetection(message.data);
+              setLanguageDetection(message.payload);
               break;
             case 'transcript:segment':
-              addTranscript(message.data);
+              addTranscript(message.payload);
               break;
             case 'audio:status':
-              setAudioStatus(message.data);
+              setAudioStatus(message.payload);
               break;
             case 'ui:interaction:ack':
               // Interaction acknowledged
@@ -82,10 +84,15 @@ export function useWebSocket() {
     }
   };
 
-  const sendMessage = (message: ClientMessage) => {
+  const sendMessage = (message: Omit<ClientMessage, 'messageId' | 'timestamp'>) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(message));
-      console.log('Sent:', message);
+      const fullMessage: ClientMessage = {
+        ...message,
+        messageId: generateUUID(),
+        timestamp: generateTimestamp(),
+      } as ClientMessage;
+      wsRef.current.send(JSON.stringify(fullMessage));
+      console.log('Sent:', fullMessage);
     } else {
       console.warn('WebSocket not connected, message not sent:', message);
     }

@@ -1,9 +1,10 @@
 import type { TranscriptSegment } from './types.js';
 
 // Mock conversation script - Spanish-speaking caller scenario
+// Template segments without runtime-generated fields (segmentId, startTime, endTime, timestamp)
 export const mockConversation: Array<{
   delay: number; // milliseconds after call start
-  segment: TranscriptSegment;
+  segment: Omit<TranscriptSegment, 'segmentId' | 'startTime' | 'endTime' | 'timestamp'>;
 }> = [
   // Initial greeting
   {
@@ -11,7 +12,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'telecommunicator',
       text: '911, what is your emergency?',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -21,7 +21,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Ayuda por favor',
-      timestamp: 0,
       isFinal: false,
     },
   },
@@ -31,7 +30,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Ayuda por favor, hay un incendio en mi casa!',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -41,7 +39,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'telecommunicator',
       text: 'I understand. Fire department is being dispatched. What is your address?',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -51,7 +48,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Calle Principal 123, cerca del parque',
-      timestamp: 0,
       isFinal: false,
     },
   },
@@ -60,7 +56,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Calle Principal 123, cerca del parque central',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -70,7 +65,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'telecommunicator',
       text: 'Confirmed, 123 Main Street near the central park. Is everyone out of the building?',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -80,7 +74,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Si, todos estamos afuera',
-      timestamp: 0,
       isFinal: false,
     },
   },
@@ -89,7 +82,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Si, todos estamos afuera y seguros',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -99,7 +91,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'telecommunicator',
       text: 'Good. Stay away from the building. Fire department is on the way, ETA 4 minutes.',
-      timestamp: 0,
       isFinal: true,
     },
   },
@@ -108,7 +99,6 @@ export const mockConversation: Array<{
     segment: {
       speaker: 'caller',
       text: 'Gracias, muchas gracias',
-      timestamp: 0,
       isFinal: true,
     },
   },

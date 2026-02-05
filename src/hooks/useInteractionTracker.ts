@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import type { ClientMessage } from '../types/messages';
 
 interface UseInteractionTrackerProps {
-  sendMessage: (message: ClientMessage) => void;
+  sendMessage: (message: Omit<ClientMessage, 'messageId' | 'timestamp'>) => void;
 }
 
 export function useInteractionTracker({ sendMessage }: UseInteractionTrackerProps) {
@@ -10,13 +10,13 @@ export function useInteractionTracker({ sendMessage }: UseInteractionTrackerProp
     (component: string, action: string, metadata?: Record<string, unknown>) => {
       sendMessage({
         type: 'ui:interaction',
-        data: {
+        payload: {
           component,
           action,
           timestamp: Date.now(),
           metadata,
         },
-      });
+      } as any); // Type assertion needed due to Omit complexity
     },
     [sendMessage]
   );

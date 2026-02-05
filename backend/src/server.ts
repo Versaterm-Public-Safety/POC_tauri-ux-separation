@@ -1,30 +1,51 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import { randomUUID } from 'crypto';
-import type { ClientMessage, ServerMessage, AudioStatus } from './types.js';
+import type { ClientMessage, ServerMessage, AudioStatus, TranscriptSegment } from './types.js';
 import { logInteraction, logEvent } from './logger.js';
 import { mockConversation } from './mockConversation.js';
+import { generateUUID } from './utils/uuid.js';
+import { generateTimestamp } from './utils/timestamp.js';
 
 const PORT = 8080;
-const wss = new WebSocketServer({ port: PORT });
+const wss = new WebSocketServer({ 
+  port: PORT,
+  path: '/tnt'  // WebSocket connections must use /tnt path per specification
+});
 
 interface ClientSession {
   ws: WebSocket;
   sessionId: string;
   callActive: boolean;
+  callStartTime: number | null;  // Timestamp when call started, for relative timing
+  activeCallId: string | null;   // Unique identifier for the current call session
   conversationTimeouts: NodeJS.Timeout[];
 }
 
 const sessions = new Map<WebSocket, ClientSession>();
 
+// Helper function to create server messages with BaseMessage fields
+function createServerMessage<T extends ServerMessage['type']>(
+  type: T,
+  payload: Extract<ServerMessage, { type: T }>['payload']
+): ServerMessage {
+  return {
+    type,
+    messageId: generateUUID(),
+    timestamp: generateTimestamp(),
+    payload,
+  } as ServerMessage;
+}
+
 console.log(`WebSocket server started on port ${PORT}`);
 console.log('Waiting for connections...\n');
 
 wss.on('connection', (ws: WebSocket) => {
-  const sessionId = randomUUID();
+  const sessionId = generateUUID();
   const session: ClientSession = {
     ws,
     sessionId,
     callActive: false,
+    callStartTime: null,
+    activeCallId: null,
     conversationTimeouts: [],
   };
   
@@ -34,17 +55,11 @@ wss.on('connection', (ws: WebSocket) => {
   logEvent(sessionId, 'connection', { timestamp: Date.now() });
 
   // Send connection acknowledgment
-  const ackMessage: ServerMessage = {
-    type: 'connection:ack',
-    data: { sessionId },
-  };
+  const ackMessage = createServerMessage('connection:ack', { sessionId });
   ws.send(JSON.stringify(ackMessage));
 
   // Send initial idle state
-  const idleState: ServerMessage = {
-    type: 'call:state',
-    data: { state: 'idle', timestamp: Date.now() },
-  };
+  const idleState = createServerMessage('call:state', { state: 'idle', timestamp: Date.now() });
   ws.send(JSON.stringify(idleState));
 
   ws.on('message', (data: Buffer) => {
@@ -62,12 +77,11 @@ wss.on('connection', (ws: WebSocket) => {
           break;
         
         case 'ui:interaction':
-          logInteraction(sessionId, message.data);
+          logInteraction(sessionId, message.payload);
           // Acknowledge interaction
-          const ack: ServerMessage = {
-            type: 'ui:interaction:ack',
-            data: { interactionId: randomUUID() },
-          };
+          const ack = createServerMessage('ui:interaction:ack', { 
+            interactionId: generateUUID() 
+          });
           ws.send(JSON.stringify(ack));
           break;
       }
@@ -103,59 +117,53 @@ function handleCallStart(session: ClientSession): void {
   }
 
   session.callActive = true;
+  session.callStartTime = Date.now();  // Track when call started for relative timing
+  session.activeCallId = generateUUID();  // Generate unique call ID
   logEvent(sessionId, 'call:start', { timestamp: Date.now() });
 
-  // Send connecting state
-  const connectingMsg: ServerMessage = {
-    type: 'call:state',
-    data: { state: 'connecting', timestamp: Date.now() },
-  };
+  // Send connecting state (no callId yet)
+  const connectingMsg = createServerMessage('call:state', { 
+    state: 'connecting', 
+    timestamp: Date.now() 
+  });
   ws.send(JSON.stringify(connectingMsg));
 
   // After 1 second, transition to active
   setTimeout(() => {
-    const activeMsg: ServerMessage = {
-      type: 'call:state',
-      data: { state: 'active', timestamp: Date.now() },
-    };
+    const activeMsg = createServerMessage('call:state', { 
+      state: 'active', 
+      timestamp: Date.now(),
+      callId: session.activeCallId!  // Include callId in active state
+    });
     ws.send(JSON.stringify(activeMsg));
 
     // Detect caller language (Spanish)
     setTimeout(() => {
-      const callerLangMsg: ServerMessage = {
-        type: 'language:detected',
-        data: {
-          speaker: 'caller',
-          languageCode: 'es',
-          languageName: 'Spanish',
-          confidence: 0.92,
-        },
-      };
+      const callerLangMsg = createServerMessage('language:detected', {
+        speaker: 'caller',
+        languageCode: 'es',
+        languageName: 'Spanish',
+        confidence: 0.92,
+      });
       ws.send(JSON.stringify(callerLangMsg));
     }, 1500);
 
     // Detect telecommunicator language (English)
     setTimeout(() => {
-      const telecomLangMsg: ServerMessage = {
-        type: 'language:detected',
-        data: {
-          speaker: 'telecommunicator',
-          languageCode: 'en',
-          languageName: 'English',
-          confidence: 0.98,
-        },
-      };
+      const telecomLangMsg = createServerMessage('language:detected', {
+        speaker: 'telecommunicator',
+        languageCode: 'en',
+        languageName: 'English',
+        confidence: 0.98,
+      });
       ws.send(JSON.stringify(telecomLangMsg));
     }, 2000);
 
     // Send initial audio status
-    const audioMsg: ServerMessage = {
-      type: 'audio:status',
-      data: {
-        caller: { status: 'streaming', level: 75 },
-        telecommunicator: { status: 'streaming', level: 80 },
-      },
-    };
+    const audioMsg = createServerMessage('audio:status', {
+      caller: { status: 'streaming', level: 75 },
+      telecommunicator: { status: 'streaming', level: 80 },
+    });
     ws.send(JSON.stringify(audioMsg));
 
     // Start mock conversation
@@ -175,44 +183,64 @@ function handleCallEnd(session: ClientSession): void {
   }
 
   session.callActive = false;
+  session.callStartTime = null;  // Clear call start time
+  
+  // Preserve callId for ended state, then clear it
+  const endedCallId = session.activeCallId;
+  
   logEvent(sessionId, 'call:end', { timestamp: Date.now() });
 
   // Clear all conversation timeouts
   session.conversationTimeouts.forEach(timeout => clearTimeout(timeout));
   session.conversationTimeouts = [];
 
-  // Send ended state
-  const endedMsg: ServerMessage = {
-    type: 'call:state',
-    data: { state: 'ended', timestamp: Date.now() },
-  };
+  // Send ended state with callId
+  const endedMsg = createServerMessage('call:state', { 
+    state: 'ended', 
+    timestamp: Date.now(),
+    callId: endedCallId!  // Include callId in ended state
+  });
   ws.send(JSON.stringify(endedMsg));
+
+  // Clear activeCallId now that ended state has been sent
+  session.activeCallId = null;
 
   // After 2 seconds, return to idle
   setTimeout(() => {
-    const idleMsg: ServerMessage = {
-      type: 'call:state',
-      data: { state: 'idle', timestamp: Date.now() },
-    };
+    const idleMsg = createServerMessage('call:state', { 
+      state: 'idle', 
+      timestamp: Date.now()  // No callId in idle state
+    });
     ws.send(JSON.stringify(idleMsg));
   }, 2000);
 }
 
 function playMockConversation(session: ClientSession): void {
   const { ws } = session;
-  const callStartTime = Date.now();
+  
+  if (!session.callStartTime) {
+    console.error('Cannot play conversation without call start time');
+    return;
+  }
 
   mockConversation.forEach(({ delay, segment }) => {
     const timeout = setTimeout(() => {
-      if (!session.callActive) return;
+      if (!session.callActive || !session.callStartTime) return;
 
-      const transcriptMsg: ServerMessage = {
-        type: 'transcript:segment',
-        data: {
-          ...segment,
-          timestamp: callStartTime + delay,
-        },
+      const now = Date.now();
+      const startTime = (now - session.callStartTime) / 1000; // Convert to seconds
+      
+      // Build complete transcript segment with all required fields
+      const completeSegment: TranscriptSegment = {
+        ...segment,
+        segmentId: generateUUID(),
+        timestamp: now,
+        startTime,
+        // Only set endTime for final segments
+        ...(segment.isFinal && { endTime: startTime }),
       };
+
+      const transcriptMsg = createServerMessage('transcript:segment', completeSegment);
       ws.send(JSON.stringify(transcriptMsg));
     }, delay);
 
@@ -230,19 +258,16 @@ function startAudioLevelUpdates(session: ClientSession): void {
     }
 
     // Random audio levels to simulate real audio
-    const audioMsg: ServerMessage = {
-      type: 'audio:status',
-      data: {
-        caller: {
-          status: 'streaming',
-          level: Math.floor(Math.random() * 30) + 60, // 60-90
-        },
-        telecommunicator: {
-          status: 'streaming',
-          level: Math.floor(Math.random() * 30) + 60, // 60-90
-        },
+    const audioMsg = createServerMessage('audio:status', {
+      caller: {
+        status: 'streaming',
+        level: Math.floor(Math.random() * 30) + 60, // 60-90
       },
-    };
+      telecommunicator: {
+        status: 'streaming',
+        level: Math.floor(Math.random() * 30) + 60, // 60-90
+      },
+    });
     ws.send(JSON.stringify(audioMsg));
   }, 500);
 
