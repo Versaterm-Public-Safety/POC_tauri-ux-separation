@@ -4,7 +4,7 @@ import type { ServerMessage, ClientMessage } from '../types/messages';
 import { generateUUID } from '../utils/uuid';
 import { generateTimestamp } from '../utils/timestamp';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = 'ws://localhost:8080/tnt';
 const RECONNECT_INTERVAL = 3000;
 
 export function useWebSocket() {

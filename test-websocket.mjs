@@ -1,7 +1,7 @@
 // Comprehensive test for User Story 1: BaseMessage Contract Foundation
 import WebSocket from 'ws';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = 'ws://localhost:8080/tnt';
 let testsPassed = 0;
 let testsFailed = 0;
 

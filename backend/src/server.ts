@@ -6,7 +6,10 @@ import { generateUUID } from './utils/uuid.js';
 import { generateTimestamp } from './utils/timestamp.js';
 
 const PORT = 8080;
-const wss = new WebSocketServer({ port: PORT });
+const wss = new WebSocketServer({ 
+  port: PORT,
+  path: '/tnt'  // WebSocket connections must use /tnt path per specification
+});
 
 interface ClientSession {
   ws: WebSocket;

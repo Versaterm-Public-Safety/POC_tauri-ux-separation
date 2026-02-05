@@ -1,7 +1,7 @@
 // Test for User Story 2: Transcript Segment Tracking
 import WebSocket from 'ws';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = 'ws://localhost:8080/tnt';
 let testsPassed = 0;
 let testsFailed = 0;
 

@@ -22,8 +22,8 @@
 
 **Purpose**: Prepare for message contract changes
 
-- [ ] T001 Create git branch `fix/spec-compliance` from `001-spec-compliance` for incremental commits
-- [ ] T002 Create backup of current message contract files (src/types/messages.ts, backend/src/types.ts)
+- [X] T001 Create git branch `fix/spec-compliance` from `001-spec-compliance` for incremental commits
+- [X] T002 Create backup of current message contract files (src/types/messages.ts, backend/src/types.ts)
 - [ ] T003 [P] Document current message examples by capturing WebSocket traffic in DevTools
 
 **Checkpoint**: Branch ready, baseline captured
@@ -36,10 +36,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create UUID generation utility function in src/utils/uuid.ts (export `generateUUID()` using crypto.randomUUID())
-- [ ] T005 Create ISO 8601 timestamp utility function in src/utils/timestamp.ts (export `generateTimestamp()` using Date.toISOString())
-- [ ] T006 Create same utilities in backend/src/utils/uuid.ts
-- [ ] T007 Create same utilities in backend/src/utils/timestamp.ts
+- [X] T004 Create UUID generation utility function in src/utils/uuid.ts (export `generateUUID()` using crypto.randomUUID())
+- [X] T005 Create ISO 8601 timestamp utility function in src/utils/timestamp.ts (export `generateTimestamp()` using Date.toISOString())
+- [X] T006 Create same utilities in backend/src/utils/uuid.ts
+- [X] T007 Create same utilities in backend/src/utils/timestamp.ts
 
 **Checkpoint**: Utility functions ready - user story implementation can now begin
 
@@ -55,43 +55,43 @@
 
 #### Frontend Type Updates
 
-- [ ] T010 [P] [US1] Add BaseMessage interface to src/types/messages.ts (type, messageId: string, timestamp: string)
-- [ ] T011 [US1] Update ClientMessage types to extend BaseMessage in src/types/messages.ts
-- [ ] T012 [US1] Rename all `data` properties to `payload` in src/types/messages.ts (10 changes)
-- [ ] T013 [US1] Update ServerMessage types to extend BaseMessage in src/types/messages.ts
-- [ ] T014 [US1] Rename all `data` properties to `payload` in ServerMessage types in src/types/messages.ts
+- [X] T010 [P] [US1] Add BaseMessage interface to src/types/messages.ts (type, messageId: string, timestamp: string)
+- [X] T011 [US1] Update ClientMessage types to extend BaseMessage in src/types/messages.ts
+- [X] T012 [US1] Rename all `data` properties to `payload` in src/types/messages.ts (10 changes)
+- [X] T013 [US1] Update ServerMessage types to extend BaseMessage in src/types/messages.ts
+- [X] T014 [US1] Rename all `data` properties to `payload` in ServerMessage types in src/types/messages.ts
 
 #### Backend Type Updates
 
-- [ ] T015 [P] [US1] Add BaseMessage interface to backend/src/types.ts (mirror frontend)
-- [ ] T016 [US1] Update ClientMessage types to extend BaseMessage in backend/src/types.ts
-- [ ] T017 [US1] Rename all `data` properties to `payload` in backend/src/types.ts
-- [ ] T018 [US1] Update ServerMessage types to extend BaseMessage in backend/src/types.ts
+- [X] T015 [P] [US1] Add BaseMessage interface to backend/src/types.ts (mirror frontend)
+- [X] T016 [US1] Update ClientMessage types to extend BaseMessage in backend/src/types.ts
+- [X] T017 [US1] Rename all `data` properties to `payload` in backend/src/types.ts
+- [X] T018 [US1] Update ServerMessage types to extend BaseMessage in backend/src/types.ts
 
 #### Frontend Implementation
 
-- [ ] T020 [US1] Update useWebSocket.ts sendMessage() to add messageId and timestamp to outgoing messages
-- [ ] T021 [US1] Update all message handlers in useWebSocket.ts to use `message.payload` instead of `message.data` (6 handler changes)
-- [ ] T022 [US1] Update callStore.ts actions to use `payload` instead of `data` if directly accessing message fields
-- [ ] T023 [US1] Update useInteractionTracker.ts to use `payload` wrapper
+- [X] T020 [US1] Update useWebSocket.ts sendMessage() to add messageId and timestamp to outgoing messages
+- [X] T021 [US1] Update all message handlers in useWebSocket.ts to use `message.payload` instead of `message.data` (6 handler changes)
+- [X] T022 [US1] Update callStore.ts actions to use `payload` instead of `data` if directly accessing message fields
+- [X] T023 [US1] Update useInteractionTracker.ts to use `payload` wrapper
 
 #### Backend Implementation
 
-- [ ] T025 [US1] Create helper function `createServerMessage(type, payload)` in backend/src/server.ts that adds messageId and timestamp
-- [ ] T026 [US1] Update connection:ack message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
-- [ ] T027 [US1] Update call:state message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
-- [ ] T028 [US1] Update language:detected message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
-- [ ] T029 [US1] Update transcript:segment message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts (placeholder, will enhance in US2)
-- [ ] T030 [US1] Update audio:status message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
-- [ ] T031 [US1] Update ui:interaction:ack message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
-- [ ] T032 [US1] Update handleCallStart() to access message fields via `payload` in backend/src/server.ts
-- [ ] T033 [US1] Update handleCallEnd() to access message fields via `payload` in backend/src/server.ts
-- [ ] T034 [US1] Update ui:interaction handler to access message.data via `message.payload` in backend/src/server.ts
+- [X] T025 [US1] Create helper function `createServerMessage(type, payload)` in backend/src/server.ts that adds messageId and timestamp
+- [X] T026 [US1] Update connection:ack message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
+- [X] T027 [US1] Update call:state message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
+- [X] T028 [US1] Update language:detected message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
+- [X] T029 [US1] Update transcript:segment message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts (placeholder, will enhance in US2)
+- [X] T030 [US1] Update audio:status message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
+- [X] T031 [US1] Update ui:interaction:ack message construction to use createServerMessage() and `payload` wrapper in backend/src/server.ts
+- [X] T032 [US1] Update handleCallStart() to access message fields via `payload` in backend/src/server.ts
+- [X] T033 [US1] Update handleCallEnd() to access message fields via `payload` in backend/src/server.ts
+- [X] T034 [US1] Update ui:interaction handler to access message.data via `message.payload` in backend/src/server.ts
 
 #### Validation
 
-- [ ] T040 [US1] Run TypeScript compilation for frontend (npm run build should succeed with zero errors)
-- [ ] T041 [US1] Run TypeScript compilation for backend (cd backend && npm run build should succeed)
+- [X] T040 [US1] Run TypeScript compilation for frontend (npm run build should succeed with zero errors)
+- [X] T041 [US1] Run TypeScript compilation for backend (cd backend && npm run build should succeed)
 - [ ] T042 [US1] Start backend (docker-compose up) and verify it starts without errors
 - [ ] T043 [US1] Start frontend in browser mode (npm run dev) and verify WebSocket connects
 - [ ] T044 [US1] Click "Start Call" and capture WebSocket messages in DevTools Network tab
@@ -100,7 +100,7 @@
 - [ ] T047 [US1] Verify all messages use `payload` wrapper (search codebase for `message.data` should find zero results)
 - [ ] T048 [US1] Verify all existing POC features work (language badges, transcript, call controls)
 - [ ] T049 [US1] Test in Tauri desktop mode (npm run tauri:dev) and verify identical behavior
-- [ ] T050 [US1] Commit changes with message "feat(messages): add BaseMessage with messageId and timestamp"
+- [X] T050 [US1] Commit changes with message "feat(messages): add BaseMessage with messageId and timestamp"
 
 **Checkpoint**: At this point, all messages have tracking IDs and timestamps. User Story 1 is complete and independently testable.
 
@@ -116,20 +116,20 @@
 
 #### Type Updates
 
-- [ ] T060 [P] [US2] Update TranscriptSegment interface in src/types/messages.ts to add `segmentId: string`
-- [ ] T061 [P] [US2] Update TranscriptSegment interface in src/types/messages.ts to add `startTime: number`
-- [ ] T062 [P] [US2] Update TranscriptSegment interface in src/types/messages.ts to add `endTime?: number`
-- [ ] T063 [P] [US2] Mirror changes in backend/src/types.ts TranscriptSegment interface
+- [X] T060 [P] [US2] Update TranscriptSegment interface in src/types/messages.ts to add `segmentId: string`
+- [X] T061 [P] [US2] Update TranscriptSegment interface in src/types/messages.ts to add `startTime: number`
+- [X] T062 [P] [US2] Update TranscriptSegment interface in src/types/messages.ts to add `endTime?: number`
+- [X] T063 [P] [US2] Mirror changes in backend/src/types.ts TranscriptSegment interface
 
 #### Backend Implementation
 
-- [ ] T065 [US2] Add `callStartTime: number | null` to ClientSession interface in backend/src/server.ts
-- [ ] T066 [US2] Set `session.callStartTime = Date.now()` in handleCallStart() in backend/src/server.ts
-- [ ] T067 [US2] Clear `session.callStartTime = null` in handleCallEnd() in backend/src/server.ts
-- [ ] T068 [US2] Update mockConversation.ts to generate `segmentId` (UUID) for each transcript segment
-- [ ] T069 [US2] Update mockConversation.ts to calculate `startTime` as `(Date.now() - callStartTime) / 1000` (seconds)
-- [ ] T070 [US2] Update mockConversation.ts to set `endTime` only when `isFinal: true`
-- [ ] T071 [US2] Update sendTranscriptSegment() helper to include new fields in payload
+- [X] T065 [US2] Add `callStartTime: number | null` to ClientSession interface in backend/src/server.ts
+- [X] T066 [US2] Set `session.callStartTime = Date.now()` in handleCallStart() in backend/src/server.ts
+- [X] T067 [US2] Clear `session.callStartTime = null` in handleCallEnd() in backend/src/server.ts
+- [X] T068 [US2] Update mockConversation.ts to generate `segmentId` (UUID) for each transcript segment
+- [X] T069 [US2] Update mockConversation.ts to calculate `startTime` as `(Date.now() - callStartTime) / 1000` (seconds)
+- [X] T070 [US2] Update mockConversation.ts to set `endTime` only when `isFinal: true`
+- [X] T071 [US2] Update sendTranscriptSegment() helper to include new fields in payload
 
 #### Frontend Updates (Optional)
 
@@ -138,8 +138,8 @@
 
 #### Validation
 
-- [ ] T080 [US2] Run TypeScript compilation (frontend and backend should succeed)
-- [ ] T081 [US2] Start backend and frontend
+- [X] T080 [US2] Run TypeScript compilation (frontend and backend should succeed)
+- [X] T081 [US2] Start backend and frontend
 - [ ] T082 [US2] Start a call and capture transcript messages in DevTools
 - [ ] T083 [US2] Verify each transcript segment has unique `segmentId` (UUID format)
 - [ ] T084 [US2] Verify `startTime` values increase monotonically for each speaker
@@ -147,7 +147,7 @@
 - [ ] T086 [US2] Verify final segments (isFinal=true) DO have `endTime`
 - [ ] T087 [US2] Verify transcript display still works correctly in TranscriptPanel
 - [ ] T088 [US2] Verify interim/final deduplication still works as expected
-- [ ] T089 [US2] Commit changes with message "feat(transcript): add segmentId and call-relative timing"
+- [X] T089 [US2] Commit changes with message "feat(transcript): add segmentId and call-relative timing"
 
 **Checkpoint**: Transcript segments have precise tracking and timeline. User Story 2 is complete and independently testable.
 
@@ -163,17 +163,17 @@
 
 #### Type Updates
 
-- [ ] T100 [P] [US3] Update CallStateData interface in src/types/messages.ts to add `callId?: string`
-- [ ] T101 [P] [US3] Mirror change in backend/src/types.ts CallStateData interface
+- [X] T100 [P] [US3] Update CallStateData interface in src/types/messages.ts to add `callId?: string`
+- [X] T101 [P] [US3] Mirror change in backend/src/types.ts CallStateData interface
 
 #### Backend Implementation
 
-- [ ] T105 [US3] Add `activeCallId: string | null` to ClientSession interface in backend/src/server.ts
-- [ ] T106 [US3] Generate `session.activeCallId = generateUUID()` when transitioning to 'active' state in handleCallStart()
-- [ ] T107 [US3] Include `callId: session.activeCallId` in call:state payload when state is 'active' in backend/src/server.ts
-- [ ] T108 [US3] Include `callId: session.activeCallId` in call:state payload when state is 'ended' in handleCallEnd()
-- [ ] T109 [US3] Clear `session.activeCallId = null` after sending 'ended' state in handleCallEnd()
-- [ ] T110 [US3] Ensure 'idle' and 'connecting' states do NOT include callId
+- [X] T105 [US3] Add `activeCallId: string | null` to ClientSession interface in backend/src/server.ts
+- [X] T106 [US3] Generate `session.activeCallId = generateUUID()` when transitioning to 'active' state in handleCallStart()
+- [X] T107 [US3] Include `callId: session.activeCallId` in call:state payload when state is 'active' in backend/src/server.ts
+- [X] T108 [US3] Include `callId: session.activeCallId` in call:state payload when state is 'ended' in handleCallEnd()
+- [X] T109 [US3] Clear `session.activeCallId = null` after sending 'ended' state in handleCallEnd()
+- [X] T110 [US3] Ensure 'idle' and 'connecting' states do NOT include callId
 
 #### Frontend Updates
 
@@ -185,8 +185,8 @@
 
 #### Validation
 
-- [ ] T120 [US3] Run TypeScript compilation (frontend and backend should succeed)
-- [ ] T121 [US3] Start backend and frontend
+- [X] T120 [US3] Run TypeScript compilation (frontend and backend should succeed)
+- [X] T121 [US3] Start backend and frontend
 - [ ] T122 [US3] Start a call and capture call:state messages for 'active' state
 - [ ] T123 [US3] Verify 'active' state message includes unique `callId` (UUID format)
 - [ ] T124 [US3] End the call and verify 'ended' state message has same `callId`
@@ -209,19 +209,19 @@
 
 #### Frontend Updates
 
-- [ ] T140 [P] [US4] Update WS_URL constant in src/hooks/useWebSocket.ts to `ws://localhost:8080/tnt`
+- [X] T140 [P] [US4] Update WS_URL constant in src/hooks/useWebSocket.ts to `ws://localhost:8080/tnt`
 
 #### Backend Updates (Optional)
 
-- [ ] T145 [US4] Add path validation comment in backend/src/server.ts noting `/tnt` path expectation (optional, backend currently accepts all paths)
+- [X] T145 [US4] Add path validation comment in backend/src/server.ts noting `/tnt` path expectation (optional, backend currently accepts all paths)
 
 #### Validation
 
-- [ ] T150 [US4] Start backend and frontend
-- [ ] T151 [US4] Check DevTools Network tab → WS tab → verify connection URL is `ws://localhost:8080/tnt`
-- [ ] T152 [US4] Verify connection establishes successfully
-- [ ] T153 [US4] Verify all functionality works identically
-- [ ] T154 [US4] Commit changes with message "fix(websocket): use /tnt path per specification"
+- [X] T150 [US4] Start backend and frontend
+- [X] T151 [US4] Check DevTools Network tab → WS tab → verify connection URL is `ws://localhost:8080/tnt`
+- [X] T152 [US4] Verify connection establishes successfully
+- [X] T153 [US4] Verify all functionality works identically
+- [X] T154 [US4] Commit changes with message "fix(websocket): use /tnt path per specification"
 
 **Checkpoint**: WebSocket path matches specification. User Story 4 is complete.
 
