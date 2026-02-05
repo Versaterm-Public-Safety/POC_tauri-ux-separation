@@ -30,6 +30,7 @@ export type ServerMessage =
 export interface CallStateData {
   state: 'idle' | 'connecting' | 'active' | 'ended';
   timestamp: number;
+  callId?: string;  // Present for 'active' and 'ended' states
 }
 
 export interface LanguageDetection {

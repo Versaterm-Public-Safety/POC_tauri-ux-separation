@@ -13,6 +13,7 @@ interface ClientSession {
   sessionId: string;
   callActive: boolean;
   callStartTime: number | null;  // Timestamp when call started, for relative timing
+  activeCallId: string | null;   // Unique identifier for the current call session
   conversationTimeouts: NodeJS.Timeout[];
 }
 
@@ -41,6 +42,7 @@ wss.on('connection', (ws: WebSocket) => {
     sessionId,
     callActive: false,
     callStartTime: null,
+    activeCallId: null,
     conversationTimeouts: [],
   };
   
@@ -113,9 +115,10 @@ function handleCallStart(session: ClientSession): void {
 
   session.callActive = true;
   session.callStartTime = Date.now();  // Track when call started for relative timing
+  session.activeCallId = generateUUID();  // Generate unique call ID
   logEvent(sessionId, 'call:start', { timestamp: Date.now() });
 
-  // Send connecting state
+  // Send connecting state (no callId yet)
   const connectingMsg = createServerMessage('call:state', { 
     state: 'connecting', 
     timestamp: Date.now() 
@@ -126,7 +129,8 @@ function handleCallStart(session: ClientSession): void {
   setTimeout(() => {
     const activeMsg = createServerMessage('call:state', { 
       state: 'active', 
-      timestamp: Date.now() 
+      timestamp: Date.now(),
+      callId: session.activeCallId!  // Include callId in active state
     });
     ws.send(JSON.stringify(activeMsg));
 
@@ -177,24 +181,32 @@ function handleCallEnd(session: ClientSession): void {
 
   session.callActive = false;
   session.callStartTime = null;  // Clear call start time
+  
+  // Preserve callId for ended state, then clear it
+  const endedCallId = session.activeCallId;
+  
   logEvent(sessionId, 'call:end', { timestamp: Date.now() });
 
   // Clear all conversation timeouts
   session.conversationTimeouts.forEach(timeout => clearTimeout(timeout));
   session.conversationTimeouts = [];
 
-  // Send ended state
+  // Send ended state with callId
   const endedMsg = createServerMessage('call:state', { 
     state: 'ended', 
-    timestamp: Date.now() 
+    timestamp: Date.now(),
+    callId: endedCallId!  // Include callId in ended state
   });
   ws.send(JSON.stringify(endedMsg));
+
+  // Clear activeCallId now that ended state has been sent
+  session.activeCallId = null;
 
   // After 2 seconds, return to idle
   setTimeout(() => {
     const idleMsg = createServerMessage('call:state', { 
       state: 'idle', 
-      timestamp: Date.now() 
+      timestamp: Date.now()  // No callId in idle state
     });
     ws.send(JSON.stringify(idleMsg));
   }, 2000);
